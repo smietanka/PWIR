@@ -4,11 +4,14 @@ public class ThreadClass implements Runnable
 {
 	public void run() 
 	{
+		World firstThread = new World();
+		World secondThread = new World();
 		while(true)
 		{
 			try {
-				World nazwa = new World();
-				System.out.println(nazwa.setInteger());
+				
+				System.out.println(firstThread.setInteger());
+				System.out.println(secondThread.setInteger());
 				Thread.sleep(1000);
 
 			} catch (InterruptedException e) {
@@ -18,6 +21,8 @@ public class ThreadClass implements Runnable
 	}
 	public static void main(String args[])
 	{
-      new Thread(new ThreadClass()).start();
+		World initialize = new World();
+		new Thread(new ThreadClass()).start();
+		new Thread(new SecondThreadClass(initialize)).start();
    }
 }
