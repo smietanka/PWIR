@@ -10,7 +10,6 @@ public class ThreadClass implements Runnable
 				World nazwa = new World();
 				System.out.println(nazwa.setInteger());
 				Thread.sleep(1000);
-				// Spanie na 10 sekundssss
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
