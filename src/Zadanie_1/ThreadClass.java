@@ -11,8 +11,10 @@ public class ThreadClass implements Runnable
 			try {
 				
 				System.out.println(firstThread.setInteger());
+				
 				System.out.println(secondThread.setInteger());
 				Thread.sleep(10000);
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}	
