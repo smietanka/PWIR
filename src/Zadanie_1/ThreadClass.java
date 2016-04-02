@@ -12,8 +12,7 @@ public class ThreadClass implements Runnable
 				
 				System.out.println(firstThread.setInteger());
 				System.out.println(secondThread.setInteger());
-				Thread.sleep(1000);
-
+				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}	

@@ -15,6 +15,7 @@ public class SecondThreadClass implements Runnable
 			{
 				System.out.println(myThread.setInteger());
 				Thread.sleep(3000);
+				//sleeeper
 			}
 			catch (Exception e)
 			{
