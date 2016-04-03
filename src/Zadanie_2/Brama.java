@@ -7,5 +7,4 @@ public class Brama implements Runnable{
 		// TODO Auto-generated method stub
 		
 	}
-
 }
