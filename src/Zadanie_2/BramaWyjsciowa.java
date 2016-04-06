@@ -17,7 +17,7 @@ public class BramaWyjsciowa implements Runnable{
 			this.muzeum.wypuscKlienta();
 			try
 			{
-				Thread.sleep(rand.nextInt(6000));
+				Thread.sleep(rand.nextInt(600));
 			}
 			catch(Exception e)
 			{

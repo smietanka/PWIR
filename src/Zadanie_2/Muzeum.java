@@ -10,20 +10,22 @@ public class Muzeum {
         this.liczbaMiejsc = miejsc;
     }
 
-    public synchronized void wpuscKlienta(String nazwaBramy) {
+    public synchronized int wpuscKlienta(String nazwaBramy, int liczbaKlientow) {
         if (this.liczbaMiejsc - zajeteMiejsca > 0) {
         	zajeteMiejsca++;
-            System.out.println("Klient wszedl "+ nazwaBramy +". [" + zajeteMiejsca + "/" + this.liczbaMiejsc + "] miejsc jest zajetych.");
+            System.out.println("Klient wszedl "+ nazwaBramy +". [" + zajeteMiejsca + "/" + this.liczbaMiejsc + "] miejsc jest zajetych. W kolejce pozostaje: " +  liczbaKlientow);
+            liczbaKlientow--;
             try {
-                Thread.sleep(rand.nextInt(2000));
+                Thread.sleep(rand.nextInt(200));
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Nie ma miejsc");
+            //System.out.println("Nie ma miejsc");
             
         }
+        return liczbaKlientow;
     }
 
     public void wypuscKlienta() {
