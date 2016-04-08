@@ -24,19 +24,22 @@ public class Muzeum {
     			if(liczbaKlientow == 0) return;
 	    		zajeteMiejsca++;
 	    		liczbaKlientow--;
-	            System.out.println("Klient wszedl "+ nazwaBramy +". [" + zajeteMiejsca + "/" + this.liczbaMiejsc + "] miejsc jest zajetych. W kolejce pozostaje: " +  liczbaKlientow);
+	            System.out.println("Klient wszed³ "+ nazwaBramy +" bram¹. [" + zajeteMiejsca + "/" + liczbaMiejsc + "] miejsc jest zajêtych. W kolejce pozostaje: " +  liczbaKlientow);
+    		}
+    		else
+    		{
+    			System.out.println("Ktoœ chce dostaæ siê "+nazwaBramy+" bram¹. Nie mo¿emy mu na to pozwoliæ :)");
     		}
     	}
     }
 
     public void wypuscKlienta() {
-    	
 		synchronized(this)
 		{
 			if(zajeteMiejsca > 0)
 	    	{
 				zajeteMiejsca--;
-				System.out.println("Klient wyszedl. [" + zajeteMiejsca + "/" + this.liczbaMiejsc + "] miejsc jest zajetych.");
+				System.out.println("Klient wyszed³. [" + zajeteMiejsca + "/" + liczbaMiejsc + "] miejsc jest zajêtych.");
 	    	}
     	}
     }

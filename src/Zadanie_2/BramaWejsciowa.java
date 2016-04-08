@@ -30,7 +30,6 @@ public class BramaWejsciowa implements Runnable{
 	                e.printStackTrace();
 	            }
 			}
-				
 		}
 	}
 }
