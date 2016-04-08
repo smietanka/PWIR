@@ -1,21 +1,36 @@
 package Zadanie_2;
 
+import java.util.Random;
+
 public class BramaWejsciowa implements Runnable{
     private Muzeum muzeum;
     String nazwaWatku;
-    int liczbaKlientow;
-    public BramaWejsciowa(Muzeum mojeMuzeum, String nazwaWatku, int liczbaKlientow) {
+    Random rand = new Random();
+    
+    public BramaWejsciowa(Muzeum mojeMuzeum, String nazwaWatku) {
         this.muzeum = mojeMuzeum;
         this.nazwaWatku = nazwaWatku;
-        this.liczbaKlientow = liczbaKlientow;
     }
+    
 	@Override
 	public void run() {
 		while(true)
 		{
-			liczbaKlientow = this.muzeum.wpuscKlienta(nazwaWatku,liczbaKlientow);
-			if(liczbaKlientow<=0)
+			if(this.muzeum.liczbaKlientow<=0)
+			{
 				break;
+			}
+			else
+			{
+				this.muzeum.wpuscKlienta(nazwaWatku);
+	            try {
+	                Thread.sleep(rand.nextInt(200));
+	            }
+	            catch (Exception e) {
+	                e.printStackTrace();
+	            }
+			}
+				
 		}
 	}
 }

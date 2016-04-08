@@ -14,14 +14,22 @@ public class BramaWyjsciowa implements Runnable{
 	public void run() {
 		while(true)
 		{
-			this.muzeum.wypuscKlienta();
-			try
+			if(this.muzeum.liczbaKlientow <= 0 && Muzeum.zajeteMiejsca <= 0) 
 			{
-				Thread.sleep(rand.nextInt(600));
+				System.out.println("Wyszedl ostatni klient. Zamykamy muzeum :)");
+				break;
 			}
-			catch(Exception e)
+			else
 			{
-				e.printStackTrace();
+				this.muzeum.wypuscKlienta();
+				try
+				{
+					Thread.sleep(rand.nextInt(600));
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}	
 			}
 		}
 	}
