@@ -9,7 +9,7 @@ public class BramaWyjsciowa implements Runnable{
 	public BramaWyjsciowa(Muzeum mojeMuzeum)
 	{
 		this.muzeum = mojeMuzeum;
-	}
+	} 
 	@Override
 	public void run() {
 		while(true)

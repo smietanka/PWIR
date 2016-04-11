@@ -4,7 +4,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-        Muzeum mojeMuzeum = new Muzeum(50, 20);
+        Muzeum mojeMuzeum = new Muzeum(3, 50);
         
         // dwie bramy wejsciowe
         new Thread(new BramaWejsciowa(mojeMuzeum, "lew¹")).start();

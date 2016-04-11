@@ -28,7 +28,7 @@ public class Muzeum {
     		}
     		else
     		{
-    			System.out.println("Ktoœ chce dostaæ siê "+nazwaBramy+" bram¹. Nie mo¿emy mu na to pozwoliæ :)");
+    			System.out.println("Klient chce dostaæ siê "+nazwaBramy+" bram¹. Nie mo¿emy mu na to pozwoliæ :)");
     		}
     	}
     }
