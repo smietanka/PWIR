@@ -1,6 +1,7 @@
 package Zadanie_3;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Client implements Runnable {
 	private int Id;
@@ -11,6 +12,9 @@ public class Client implements Runnable {
 	private int HungryLimit;
 	private volatile boolean IsAlive;
 	
+	private TimeWatch timeWatcher;
+	private long elapsedTime;
+	
 	private Random myRand = new Random(); // symulowanie losowosci
 	private NameGenerator myNameGenerator = new NameGenerator();
 	
@@ -19,9 +23,10 @@ public class Client implements Runnable {
 		this.Id = id;
 		this.Name = myNameGenerator.getName();
 		this.CurrentHealthPoints = this.MaxHealtPoints = healthPoints;
-		this.HungryLimit = 50; // ile % maksymalnego zycia dla danego klienta bedzie rownoznaczne z glodem
+		this.HungryLimit = 15; // ile % maksymalnego zycia dla danego klienta bedzie rownoznaczne z glodem
 		this.Statuses = Status.Walking;
 		this.IsAlive = true; // NARODZINY NOWEGO KLIENTA
+		timeWatcher = TimeWatch.start();
 	}
 
 	@Override
@@ -94,7 +99,7 @@ public class Client implements Runnable {
 	
 	public void HitClient()
 	{
-		this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(50);
+		this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(5);
 	}
 	
 	public int GetId()
@@ -111,11 +116,17 @@ public class Client implements Runnable {
 	{
 		return this.IsAlive;
 	}
+	
+	public long GetElapsedTime()
+	{
+		return this.elapsedTime;
+	}
 
 	
 	public void KillClient()
 	{
 		this.IsAlive = false;
+		this.elapsedTime = timeWatcher.time(TimeUnit.SECONDS);
 		//System.out.println(this.Name + " has been killed...");
 	}
 	

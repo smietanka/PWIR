@@ -34,7 +34,7 @@ public class ThreadManager implements Runnable{
 					currentClients++;
 					clientId++;
 					
-					System.out.println("Stworzono nowego klienta o id: ["+newClient.GetId()+"]. Nazwa: ["+newClient.GetName()+"]");
+					System.out.println("Mamy nowego klienta na œwiecie z nazw¹: "+newClient.GetName()+" o id: ["+newClient.GetId()+"]");
 					
 					clientThread.start();
 				}
@@ -101,7 +101,7 @@ public class ThreadManager implements Runnable{
 			for(Client x : clientsToRemove)
 			{
 				listOfClients.remove(x);
-				System.out.println(x.GetName() + " zginal.. Usuwamy zw³oki...");
+				System.out.println(x.GetName() + " zginal po " + x.GetElapsedTime() + " sekundach... Usuwamy zw³oki...");
 			}
 		}
 	}
