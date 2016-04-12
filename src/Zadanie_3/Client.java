@@ -12,73 +12,41 @@ public class Client implements Runnable {
 	private volatile boolean IsAlive;
 	
 	private Random myRand = new Random(); // symulowanie losowosci
+	private NameGenerator myNameGenerator = new NameGenerator();
 	
-	public Client(int id)
+	public Client(int id, int healthPoints)
 	{
 		this.Id = id;
-		SetParameters();
-	}
-	
-	public int getId()
-	{
-		return this.Id;
-	}
-	public void SetParameters()
-	{
-		this.Name = "Klient "+this.Id;
-		this.CurrentHealthPoints = this.MaxHealtPoints = 100;
-		this.HungryLimit = 40;
+		this.Name = myNameGenerator.getName();
+		this.CurrentHealthPoints = this.MaxHealtPoints = healthPoints;
+		this.HungryLimit = 50; // ile % maksymalnego zycia dla danego klienta bedzie rownoznaczne z glodem
 		this.Statuses = Status.Walking;
 		this.IsAlive = true; // NARODZINY NOWEGO KLIENTA
 	}
-	
+
 	@Override
 	public void run() {
-		try
-		{
-			Thread.sleep(1000);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
 		// taski do zrobienia:
 		// - klient chodzi
 		// - klient po w jakims czasie spada mu g³ód 
 		// - gdy bedzie g³odny musi iœæ do piekarni
 		// - jeœli czekanie klienta bedzie na tyle d³ugie w kolejce to klient umiera
 		
-		
-		// jesli CurrentHealthPoints spadnie do zera to przerywamy dzia³anie klienta. Inaczej mówi¹c on umiera :)
 		while(true)
 		{
 			if(this.IsAlive)
 			{
-				this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(80);
-				// jesli zyje to:
-				if(this.Statuses != Status.Killed)
+				// Z biegiem czasu klient robi sie bardziej glodny
+				HitClient();
+				// Sprawdzamy status klienta i nadajemy dany status.
+				ChangeStatus(CheckHealthPoints());
+				
+				//sprawdzamy jaki ma status. W zaleznosci od statusu robimy jakis event
+				if(this.Statuses == Status.Killed)
 				{
-					// sprawdzamy czy ma 0 zycia, jesli tak to zabijamy
-					if(this.CurrentHealthPoints <= 0)
-					{
-						KillClient();
-					}
-					
-					// jesli nie zyje to omijamy kazdy nastepny blok.
-					if(this.IsAlive)
-					{
-						// jesli ma status glodny to nie trzeba mu nadawac go jeszcze raz.
-						if(this.Statuses != Status.Hungry)
-						{
-							//sprawdzamy czy osiagnal swoj limit glodu, jesli tak to zmieniamy mu status na glodny
-							if(this.CurrentHealthPoints < this.HungryLimit )
-							{
-								ChangeStatus(Status.Hungry);
-							}	
-						}	
-					}
+					KillClient();
 				}
+				
 				try 
 				{
 					Thread.sleep(myRand.nextInt(2000));
@@ -91,26 +59,64 @@ public class Client implements Runnable {
 			}
 			else
 			{
+				// tu klient juz nie zyje...
 				// usypiamy watek na 5 sekund po czym wychodzimy z nieskonczonej petli. W ten sposob zabijamy watek 
 				try 
 				{
-					Thread.sleep(2000);
+					Thread.sleep(5000);
 				} 
 				catch (InterruptedException e) 
 				{
 					e.printStackTrace();
 				}
-				//System.out.println(this.Name + " juz nie zyje. Status: "+this.Statuses);
+				//System.out.println(this.Name + " is dead...");
 				//break;
 			}
 		}
 	}
 	
+	public Status CheckHealthPoints()
+	{
+		if(this.IsAlive)
+		{
+			// jesli zdrowie bedzie mniejsze od hungry limit (% z maxHealth) i wieksze od 0
+			if((this.CurrentHealthPoints < (this.HungryLimit*this.MaxHealtPoints)/100) && (this.CurrentHealthPoints > 0))
+			{
+				return Status.Hungry;
+			}
+			if(this.CurrentHealthPoints <= 0)
+			{
+				return Status.Killed;
+			}
+		}
+		return Status.Walking;
+	}
+	
+	public void HitClient()
+	{
+		this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(50);
+	}
+	
+	public int GetId()
+	{
+		return this.Id;
+	}
+	
+	public String GetName()
+	{
+		return this.Name;
+	}
+	
+	public boolean GetIsAlive()
+	{
+		return this.IsAlive;
+	}
+
+	
 	public void KillClient()
 	{
-		ChangeStatus(Status.Killed);
 		this.IsAlive = false;
-		System.out.println(this.Name + " has been killed...");
+		//System.out.println(this.Name + " has been killed...");
 	}
 	
 	public void ChangeStatus(Status newStatus)
@@ -120,19 +126,11 @@ public class Client implements Runnable {
 	
 	public void ShowVitalFunctions()
 	{
-		if(this.IsAlive)
-		{
-			String vitalFunctions = String.format("%s:\nCzy zyje?: %s\nStatus: %s\nAktualne zycie: %d\n------------------------------------------------------------------------------------------", 
-					this.Name, 
-					this.IsAlive, 
-					this.Statuses, 
-					this.CurrentHealthPoints);
-			System.out.println(vitalFunctions);	
-		}
-		else
-		{
-			System.out.println(this.Name + " nie ¿yje...");
-		}
-		
+		String vitalFunctions = String.format("%s:\nCzy zyje?: %s\nStatus: %s\nAktualne zycie: %d\n------------------------------------------------------------------------------------------", 
+				this.Name, 
+				this.IsAlive, 
+				this.Statuses, 
+				this.CurrentHealthPoints);
+		System.out.println(vitalFunctions);
 	}
 }
