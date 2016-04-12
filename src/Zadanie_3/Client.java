@@ -23,7 +23,7 @@ public class Client implements Runnable {
 		this.Id = id;
 		this.Name = myNameGenerator.getName();
 		this.CurrentHealthPoints = this.MaxHealtPoints = healthPoints;
-		this.HungryLimit = 15; // ile % maksymalnego zycia dla danego klienta bedzie rownoznaczne z glodem
+		this.HungryLimit = 80; // ile % maksymalnego zycia dla danego klienta bedzie rownoznaczne z glodem
 		this.Statuses = Status.Walking;
 		this.IsAlive = true; // NARODZINY NOWEGO KLIENTA
 		timeWatcher = TimeWatch.start();
@@ -99,7 +99,15 @@ public class Client implements Runnable {
 	
 	public void HitClient()
 	{
-		this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(5);
+		// jesli nasz klient jest g³odny to g³ód spada mu szybciej..
+		if(this.Statuses == Status.Hungry)
+		{
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(20);
+		}
+		else
+		{
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(5);	
+		}
 	}
 	
 	public int GetId()
@@ -127,7 +135,7 @@ public class Client implements Runnable {
 	{
 		this.IsAlive = false;
 		this.elapsedTime = timeWatcher.time(TimeUnit.SECONDS);
-		//System.out.println(this.Name + " has been killed...");
+		System.out.println(this.Name + " has been killed...");
 	}
 	
 	public void ChangeStatus(Status newStatus)
