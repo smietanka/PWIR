@@ -1,4 +1,4 @@
-package Zadanie_3;
+package Zadanie_3.Methods;
 
 import java.util.*;
 

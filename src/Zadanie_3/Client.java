@@ -2,6 +2,8 @@ package Zadanie_3;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import Zadanie_3.Methods.NameGenerator;
+import Zadanie_3.Methods.TimeWatch;
 
 public class Client implements Runnable {
 	private int Id;
@@ -68,14 +70,14 @@ public class Client implements Runnable {
 				// usypiamy watek na 5 sekund po czym wychodzimy z nieskonczonej petli. W ten sposob zabijamy watek 
 				try 
 				{
-					Thread.sleep(5000);
+					Thread.sleep(1000);
 				} 
 				catch (InterruptedException e) 
 				{
 					e.printStackTrace();
 				}
-				//System.out.println(this.Name + " is dead...");
-				//break;
+				System.out.println(this.Name + " is dead...");
+				break;
 			}
 		}
 	}
@@ -102,11 +104,11 @@ public class Client implements Runnable {
 		// jesli nasz klient jest g³odny to g³ód spada mu szybciej..
 		if(this.Statuses == Status.Hungry)
 		{
-			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(20);
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(50);
 		}
 		else
 		{
-			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(5);	
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(20);	
 		}
 	}
 	

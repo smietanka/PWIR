@@ -2,32 +2,37 @@ package Zadanie_3;
 
 import java.util.*;
 
-public class ThreadManager implements Runnable{
+import Zadanie_3.Types.Settings;
 
-	private int maxClients;
+public class ThreadManager implements Runnable{
+	// Ustawienia
+	private Settings mySettings;
+	
+	// zmienne klientów
 	private List<Client> listOfClients = new ArrayList<Client>();
 	private List<Client> listOfDeadClients = new ArrayList<Client>();
 	private int currentClients = 0;
 	private int clientId = 0;
-	private Random rand = new Random();
 	
-	public ThreadManager(int maxClients)
+	// zmienne cukierni
+	
+	public ThreadManager(Settings mySetup)
 	{
-		this.maxClients = maxClients;
+		this.mySettings = mySetup;
 	}
 	
 	@Override
 	public void run() {
-		if(this.maxClients == 0) return;
+		if(mySettings.clientOnMap == 0) return;
 		
 		while(true)
 		{
-			if(currentClients < maxClients)
+			if(currentClients < mySettings.clientOnMap)
 			{
 				synchronized(this)
 				{
 					// Tworzenie nowego watku klienta
-					Client newClient = new Client(clientId, 100);
+					Client newClient = new Client(clientId, mySettings.healthPoints);
 					listOfClients.add(newClient);
 					Thread clientThread = new Thread(newClient);
 					
@@ -42,7 +47,7 @@ public class ThreadManager implements Runnable{
 			else
 			{
 				try {
-					Thread.sleep(rand.nextInt(1000));
+					Thread.sleep(1500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -64,33 +69,29 @@ public class ThreadManager implements Runnable{
 		// czy lista klientów jest pusta ?
 		if(!listOfClients.isEmpty())
 		{
-			int i = 0;
 			// lecimy po klientach
 			for(Client eachClient : listOfClients)
 			{
 				// jesli klient jest null to cos jest nie tak
 				if(eachClient != null)
 				{
-					//eachClient.ShowVitalFunctions();
-					synchronized(this)
+					eachClient.ShowVitalFunctions();
+					// jesli nie zyje to
+					if(!eachClient.GetIsAlive())
 					{
-						// jesli nie zyje to
-						if(!eachClient.GetIsAlive())
-						{
-							// dekrementujemy 
-							currentClients--;
-							// dodajemy do list pomocniczej indeksy zmar³ych klientów
-							// nie mo¿emy edytowac kolekcji korzystaj¹c z niej w pêtli. Trzeba to zrobiæ gdzieœ na zewn¹trz
-							clientsToRemove.add(eachClient);
-							listOfDeadClients.add(eachClient);
-						}	
+						// dekrementujemy 
+						currentClients--;
+						// dodajemy do list pomocniczej indeksy zmar³ych klientów
+						// nie mo¿emy edytowac kolekcji korzystaj¹c z niej w pêtli. Trzeba to zrobiæ gdzieœ na zewn¹trz
+						clientsToRemove.add(eachClient);
+						listOfDeadClients.add(eachClient);
 					}	
+					
 				}
 				else
 				{
 					System.out.println("[Error] - CheckClients() in ThreadManager.java. Client is null.");
 				}
-				i++;
 			}	
 		}
 		
