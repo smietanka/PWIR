@@ -30,7 +30,7 @@ public class Bakery implements Runnable {
 			try
 			{
 				//Czas jaki piekarnia potrzebuje na produkcje paczka
-				Thread.sleep(this.timeDoughtnutMake);
+				Thread.sleep(this.timeDoughtnutMake*1000);
 			}
 			catch (Exception e)
 			{
