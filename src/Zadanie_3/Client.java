@@ -1,5 +1,3 @@
-//
-
 package Zadanie_3;
 
 import java.util.Random;

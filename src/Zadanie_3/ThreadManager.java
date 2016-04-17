@@ -27,7 +27,7 @@ public class ThreadManager implements Runnable{
 		if(mySettings.clientOnMap == 0) return;
 		
 		// Tworzenie piekarni
-		Bakery myBakery = new Bakery();
+		Bakery myBakery = new Bakery(mySettings.timeDoughnutMake);
 		Thread myThreadBakery = new Thread(myBakery);
 		myThreadBakery.start();
 		

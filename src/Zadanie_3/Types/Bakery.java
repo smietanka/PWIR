@@ -1,30 +1,36 @@
-//1.Produkcja 1 p¹czka zajmuje x czasu okreœlonego w Settings
-//2.Wyprodukowany p¹czek trafia do kasy gdzie jest mniej p¹czków
-
 package Zadanie_3.Types;
+
+import java.util.Random;
 
 public class Bakery implements Runnable {
 	
-	//Zak³adamy, ¿e w ka¿dej kasie jest tyle samo p¹czków na starcie
-	private PointOfSale Pos1 = new PointOfSale(10);
-	private PointOfSale Pos2 = new PointOfSale(10);
+	Random rand = new Random();
+	//Zak³adamy, ¿e w ka¿dej kasie jest tyle samo p¹czków na starcie, randomowy czas sprzeda¿y p¹czka
+	private PointOfSale Pos1 = new PointOfSale(10, rand.nextInt(1000));
+	private PointOfSale Pos2 = new PointOfSale(10, rand.nextInt(1000));
+	private int timeDoughtnutMake;
 	
+	public Bakery(int timeDoughtnutMake)
+	{
+		this.timeDoughtnutMake = timeDoughtnutMake;
+	}
 	@Override
 	public void run() {
 		
 		while(true)
 		{
 			// Sprawdzamy ktory punkt sprzedazy potrzebuje zaopatrzenia paczkow i ladujemy paczkami
-			PointOfSale sale = DoughnutLoader();
+			PointOfSale sale = WhereIsLessDoughnut();
 			if(sale != null)
 			{
-				sale.LoadDoughtnuts(15);
+				sale.LoadDoughtnuts(1);
 			}
 			
 			// usypiamy watek
 			try
 			{
-				Thread.sleep(2000);
+				//Czas jaki piekarnia potrzebuje na produkcje paczka
+				Thread.sleep(this.timeDoughtnutMake);
 			}
 			catch (Exception e)
 			{
@@ -33,6 +39,7 @@ public class Bakery implements Runnable {
 		}
 	}
 	
+	/*Sprawdza w której kasie stan p¹czków jest < 2
 	public PointOfSale DoughnutLoader()
 	{
 		PointOfSale result = null;
@@ -47,7 +54,7 @@ public class Bakery implements Runnable {
 		
 		return result;
 	}
-	
+	*/
 	public PointOfSale WhereIsLessClients()
 	{
 		PointOfSale result = null;
@@ -58,6 +65,20 @@ public class Bakery implements Runnable {
 		else
 		{
 			result = Pos2;
+		}
+		return result;
+	}
+	
+	public PointOfSale WhereIsLessDoughnut()
+	{
+		PointOfSale result = null;
+		if(Pos1.GetHowManyDoughnuts() > Pos2.GetHowManyDoughnuts())
+		{
+			result = Pos2;
+		}
+		else 
+		{
+			result = Pos1;
 		}
 		return result;
 	}

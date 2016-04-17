@@ -10,6 +10,7 @@ public class Main {
 		// Ustawienia
 		mySetup.healthPoints = 100;
 		mySetup.clientOnMap = 1;
+		mySetup.timeDoughnutMake = 1000; //[ms]
 		// Koniec ustawieñ
 		
 		ThreadManager mojThreadManager = new ThreadManager(mySetup);
