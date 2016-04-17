@@ -5,7 +5,32 @@ import Zadanie_3.Client;
 
 public class PointOfSale {
 	// kolejka w danym punkcie sprzeda¿y
-	public List<Client> ClientsQueue;
+	private List<Client> ClientsQueue = new ArrayList<Client>();
 	// iloœæ p¹czkow w danym punkcie sprzeda¿y
-	public int HowManyDoughnuts;
+	private int HowManyDoughnuts;
+	
+	public PointOfSale(int howManyDoo)
+	{
+		this.HowManyDoughnuts = howManyDoo;
+	}
+	
+	public void PutClientToQueue(Client client)
+	{
+		ClientsQueue.add(client);
+	}
+	
+	public void LoadDoughtnuts(int howMany)
+	{
+		this.HowManyDoughnuts = this.HowManyDoughnuts + howMany;
+	}
+	
+	public int GetHowManyDoughnuts()
+	{
+		return this.HowManyDoughnuts;
+	}
+	
+	public int HowManyClients()
+	{
+		return ClientsQueue.size();
+	}
 }

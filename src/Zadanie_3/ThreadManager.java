@@ -2,6 +2,7 @@ package Zadanie_3;
 
 import java.util.*;
 
+import Zadanie_3.Types.Bakery;
 import Zadanie_3.Types.Settings;
 
 public class ThreadManager implements Runnable{
@@ -25,6 +26,11 @@ public class ThreadManager implements Runnable{
 	public void run() {
 		if(mySettings.clientOnMap == 0) return;
 		
+		// Tworzenie piekarni
+		Bakery myBakery = new Bakery();
+		Thread myThreadBakery = new Thread(myBakery);
+		myThreadBakery.start();
+		
 		while(true)
 		{
 			if(currentClients < mySettings.clientOnMap)
@@ -32,7 +38,7 @@ public class ThreadManager implements Runnable{
 				synchronized(this)
 				{
 					// Tworzenie nowego watku klienta
-					Client newClient = new Client(clientId, mySettings.healthPoints);
+					Client newClient = new Client(clientId, mySettings.healthPoints, myBakery);
 					listOfClients.add(newClient);
 					Thread clientThread = new Thread(newClient);
 					

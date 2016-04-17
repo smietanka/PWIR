@@ -4,6 +4,8 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import Zadanie_3.Methods.NameGenerator;
 import Zadanie_3.Methods.TimeWatch;
+import Zadanie_3.Types.Bakery;
+import Zadanie_3.Types.PointOfSale;
 
 public class Client implements Runnable {
 	private int Id;
@@ -20,7 +22,9 @@ public class Client implements Runnable {
 	private Random myRand = new Random(); // symulowanie losowosci
 	private NameGenerator myNameGenerator = new NameGenerator();
 	
-	public Client(int id, int healthPoints)
+	private Bakery myBakery;
+	
+	public Client(int id, int healthPoints, Bakery bakery)
 	{
 		this.Id = id;
 		this.Name = myNameGenerator.getName();
@@ -29,13 +33,13 @@ public class Client implements Runnable {
 		this.Statuses = Status.Walking;
 		this.IsAlive = true; // NARODZINY NOWEGO KLIENTA
 		timeWatcher = TimeWatch.start();
+		this.myBakery = bakery;
 	}
 
 	@Override
 	public void run() {
 		// taski do zrobienia:
 		// - klient chodzi
-		// - klient po w jakims czasie spada mu g³ód 
 		// - gdy bedzie g³odny musi iœæ do piekarni
 		// - jeœli czekanie klienta bedzie na tyle d³ugie w kolejce to klient umiera
 		
@@ -48,6 +52,12 @@ public class Client implements Runnable {
 				// Sprawdzamy status klienta i nadajemy dany status.
 				ChangeStatus(CheckHealthPoints());
 				
+				// jesli klient jest glodny to trzeba go wyslac do cukierni 
+				if(this.Statuses == Status.Hungry)
+				{
+					GoToQueue(myBakery.WhereIsLessClients());
+				}
+				
 				//sprawdzamy jaki ma status. W zaleznosci od statusu robimy jakis event
 				if(this.Statuses == Status.Killed)
 				{
@@ -56,7 +66,7 @@ public class Client implements Runnable {
 				
 				try 
 				{
-					Thread.sleep(myRand.nextInt(2000));
+					Thread.sleep(myRand.nextInt(1000));
 				} 
 				catch (InterruptedException e) 
 				{
@@ -67,7 +77,7 @@ public class Client implements Runnable {
 			else
 			{
 				// tu klient juz nie zyje...
-				// usypiamy watek na 5 sekund po czym wychodzimy z nieskonczonej petli. W ten sposob zabijamy watek 
+				// usypiamy watek na 1 sekunde po czym wychodzimy z nieskonczonej petli. W ten sposob zabijamy watek 
 				try 
 				{
 					Thread.sleep(1000);
@@ -138,6 +148,15 @@ public class Client implements Runnable {
 		this.IsAlive = false;
 		this.elapsedTime = timeWatcher.time(TimeUnit.SECONDS);
 		System.out.println(this.Name + " has been killed...");
+	}
+	public void GoToQueue(PointOfSale pos)
+	{
+		this.Statuses = Status.InQueue;
+		pos.PutClientToQueue(this);
+	}
+	public void BuyDoughnut()
+	{
+		this.myBakery.SellDoughnut();
 	}
 	
 	public void ChangeStatus(Status newStatus)
