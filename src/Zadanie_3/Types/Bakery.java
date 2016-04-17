@@ -3,7 +3,7 @@ package Zadanie_3.Types;
 import java.util.Random;
 
 public class Bakery implements Runnable {
-	
+	// chuj kurwa dupa cipa
 	Random rand = new Random();
 	//Zak³adamy, ¿e w ka¿dej kasie jest tyle samo p¹czków na starcie, randomowy czas sprzeda¿y p¹czka
 	private PointOfSale Pos1 = new PointOfSale(10, rand.nextInt(1000));
