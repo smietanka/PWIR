@@ -1,9 +1,13 @@
+//1.Produkcja 1 p¹czka zajmuje x czasu okreœlonego w Settings
+//2.Wyprodukowany p¹czek trafia do kasy gdzie jest mniej p¹czków
+
 package Zadanie_3.Types;
 
 public class Bakery implements Runnable {
 	
-	private PointOfSale Pos1 = new PointOfSale(15);
-	private PointOfSale Pos2 = new PointOfSale(20);
+	//Zak³adamy, ¿e w ka¿dej kasie jest tyle samo p¹czków na starcie
+	private PointOfSale Pos1 = new PointOfSale(10);
+	private PointOfSale Pos2 = new PointOfSale(10);
 	
 	@Override
 	public void run() {

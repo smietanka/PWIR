@@ -1,3 +1,5 @@
+//1.Randomowy czas sprzeda¿y dla ka¿dej kasy
+
 package Zadanie_3.Types;
 
 import java.util.*;
