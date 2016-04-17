@@ -24,7 +24,7 @@ public class Client implements Runnable {
 	
 	private Bakery myBakery;
 	
-	public Client(int id, int healthPoints, Bakery bakery)
+	public Client(int id, int healthPoints, Bakery myBakery)
 	{
 		this.Id = id;
 		this.Name = myNameGenerator.getName();
@@ -33,7 +33,7 @@ public class Client implements Runnable {
 		this.Statuses = Status.Walking;
 		this.IsAlive = true; // NARODZINY NOWEGO KLIENTA
 		timeWatcher = TimeWatch.start();
-		this.myBakery = bakery;
+		this.myBakery = myBakery;
 	}
 
 	@Override
@@ -114,11 +114,11 @@ public class Client implements Runnable {
 		// jesli nasz klient jest g³odny to g³ód spada mu szybciej..
 		if(this.Statuses == Status.Hungry)
 		{
-			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(50);
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(60);
 		}
 		else
 		{
-			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(20);	
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(50);	
 		}
 	}
 	
@@ -154,10 +154,6 @@ public class Client implements Runnable {
 		this.Statuses = Status.InQueue;
 		pos.PutClientToQueue(this);
 	}
-	public void BuyDoughnut()
-	{
-		this.myBakery.SellDoughnut();
-	}
 	
 	public void ChangeStatus(Status newStatus)
 	{
@@ -172,5 +168,10 @@ public class Client implements Runnable {
 				this.Statuses, 
 				this.CurrentHealthPoints);
 		System.out.println(vitalFunctions);
+	}
+	
+	public void AddHP()
+	{
+		this.CurrentHealthPoints = this.MaxHealtPoints;
 	}
 }

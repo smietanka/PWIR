@@ -1,29 +1,29 @@
 package Zadanie_3.Types;
 
-import java.util.Random;
-
 public class Bakery implements Runnable {
 	
-	Random rand = new Random();
-	//Zak³adamy, ¿e w ka¿dej kasie jest tyle samo p¹czków na starcie, randomowy czas sprzeda¿y p¹czka
-	private PointOfSale Pos1 = new PointOfSale(10, rand.nextInt(1000));
-	private PointOfSale Pos2 = new PointOfSale(10, rand.nextInt(1000));
 	private int timeDoughtnutMake;
+	private PointOfSale Pos1,Pos2;
 	
-	public Bakery(int timeDoughtnutMake)
+	public Bakery(int timeDoughtnutMake, PointOfSale pos1, PointOfSale pos2)
 	{
 		this.timeDoughtnutMake = timeDoughtnutMake;
+		this.Pos1 = pos1;
+		this.Pos2 = pos2;
 	}
 	@Override
 	public void run() {
 		
 		while(true)
 		{
-			// Sprawdzamy ktory punkt sprzedazy potrzebuje zaopatrzenia paczkow i ladujemy paczkami
+			
 			PointOfSale sale = WhereIsLessDoughnut();
 			if(sale != null)
 			{
 				sale.LoadDoughtnuts(1);
+				System.out.println("---------------------------");
+				System.out.println("Kasa numer "+sale.name+" otrzyma³a 1 paczka!");
+				System.out.println("---------------------------");
 			}
 			
 			// usypiamy watek
@@ -55,6 +55,7 @@ public class Bakery implements Runnable {
 		return result;
 	}
 	*/
+
 	public PointOfSale WhereIsLessClients()
 	{
 		PointOfSale result = null;
@@ -68,7 +69,7 @@ public class Bakery implements Runnable {
 		}
 		return result;
 	}
-	
+
 	public PointOfSale WhereIsLessDoughnut()
 	{
 		PointOfSale result = null;
@@ -81,10 +82,5 @@ public class Bakery implements Runnable {
 			result = Pos1;
 		}
 		return result;
-	}
-	
-	public void SellDoughnut()
-	{
-		
 	}
 }

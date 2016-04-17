@@ -3,9 +3,11 @@ package Zadanie_3;
 import java.util.*;
 
 import Zadanie_3.Types.Bakery;
+import Zadanie_3.Types.PointOfSale;
 import Zadanie_3.Types.Settings;
 
 public class ThreadManager implements Runnable{
+	Random rand = new Random();
 	// Ustawienia
 	private Settings mySettings;
 	
@@ -14,8 +16,6 @@ public class ThreadManager implements Runnable{
 	private List<Client> listOfDeadClients = new ArrayList<Client>();
 	private int currentClients = 0;
 	private int clientId = 0;
-	
-	// zmienne cukierni
 	
 	public ThreadManager(Settings mySetup)
 	{
@@ -26,8 +26,16 @@ public class ThreadManager implements Runnable{
 	public void run() {
 		if(mySettings.clientOnMap == 0) return;
 		
+		//Tworzenie punktow sprzedazy, maja (10 paczkow, czas sprzedazy paczka)
+		PointOfSale myPos1 = new PointOfSale(10, rand.nextInt(1000),"1");
+		Thread myThreadPos1 = new Thread(myPos1);
+		myThreadPos1.start();
+		PointOfSale myPos2 = new PointOfSale(10, rand.nextInt(1000),"2");
+		Thread myThreadPos2 = new Thread(myPos2);
+		myThreadPos2.start();		
+		
 		// Tworzenie piekarni
-		Bakery myBakery = new Bakery(mySettings.timeDoughnutMake);
+		Bakery myBakery = new Bakery(mySettings.timeDoughnutMake, myPos1, myPos2);
 		Thread myThreadBakery = new Thread(myBakery);
 		myThreadBakery.start();
 		
