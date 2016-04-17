@@ -1,17 +1,18 @@
 package Zadanie_3.Types;
 
+import java.util.Random;
+
 public class Bakery implements Runnable {
 	
-	private PointOfSale Pos1 = new PointOfSale(15);
-	private PointOfSale Pos2 = new PointOfSale(20);
+	Random rand = new Random();
+	//Zak³adamy, ¿e w ka¿dej kasie jest tyle samo p¹czków na starcie, randomowy czas sprzeda¿y p¹czka
+	private PointOfSale Pos1 = new PointOfSale(10, rand.nextInt(1000));
+	private PointOfSale Pos2 = new PointOfSale(10, rand.nextInt(1000));
+	private int timeDoughtnutMake;
 	
-	private int _howManyDoughnuts;
-	private int _timeToCreateDoughnuts;
-	
-	public Bakery(int howManyDoughnut, int timeToCreateDoughnut)
+	public Bakery(int timeDoughtnutMake)
 	{
-		this._howManyDoughnuts = howManyDoughnut;
-		this._timeToCreateDoughnuts = timeToCreateDoughnut;
+		this.timeDoughtnutMake = timeDoughtnutMake;
 	}
 	@Override
 	public void run() {
@@ -19,16 +20,17 @@ public class Bakery implements Runnable {
 		while(true)
 		{
 			// Sprawdzamy ktory punkt sprzedazy potrzebuje zaopatrzenia paczkow i ladujemy paczkami
-			PointOfSale sale = DoughnutLoader();
+			PointOfSale sale = WhereIsLessDoughnut();
 			if(sale != null)
 			{
-				sale.LoadDoughtnuts(_howManyDoughnuts);
+				sale.LoadDoughtnuts(1);
 			}
 			
 			// usypiamy watek
 			try
 			{
-				Thread.sleep((_timeToCreateDoughnuts*1000) * _howManyDoughnuts);
+				//Czas jaki piekarnia potrzebuje na produkcje paczka
+				Thread.sleep(this.timeDoughtnutMake*1000);
 			}
 			catch (Exception e)
 			{
@@ -37,6 +39,7 @@ public class Bakery implements Runnable {
 		}
 	}
 	
+	/*Sprawdza w której kasie stan p¹czków jest < 2
 	public PointOfSale DoughnutLoader()
 	{
 		PointOfSale result = null;
@@ -51,7 +54,7 @@ public class Bakery implements Runnable {
 		
 		return result;
 	}
-	
+	*/
 	public PointOfSale WhereIsLessClients()
 	{
 		PointOfSale result = null;
@@ -62,6 +65,20 @@ public class Bakery implements Runnable {
 		else
 		{
 			result = Pos2;
+		}
+		return result;
+	}
+	
+	public PointOfSale WhereIsLessDoughnut()
+	{
+		PointOfSale result = null;
+		if(Pos1.GetHowManyDoughnuts() > Pos2.GetHowManyDoughnuts())
+		{
+			result = Pos2;
+		}
+		else 
+		{
+			result = Pos1;
 		}
 		return result;
 	}

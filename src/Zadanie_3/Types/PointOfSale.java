@@ -8,10 +8,13 @@ public class PointOfSale {
 	private List<Client> ClientsQueue = new ArrayList<Client>();
 	// iloœæ p¹czkow w danym punkcie sprzeda¿y
 	private int HowManyDoughnuts;
+	// czas sprzeda¿y p¹czka
+	private int timeSelling;
 	
-	public PointOfSale(int howManyDoo)
+	public PointOfSale(int howManyDoo, int timeSelling)
 	{
 		this.HowManyDoughnuts = howManyDoo;
+		this.timeSelling = timeSelling;
 	}
 	
 	public void PutClientToQueue(Client client)
@@ -32,5 +35,9 @@ public class PointOfSale {
 	public int HowManyClients()
 	{
 		return ClientsQueue.size();
+	}
+	public int GetTimeSelling()
+	{
+		return timeSelling;
 	}
 }
