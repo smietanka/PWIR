@@ -5,6 +5,14 @@ public class Bakery implements Runnable {
 	private PointOfSale Pos1 = new PointOfSale(15);
 	private PointOfSale Pos2 = new PointOfSale(20);
 	
+	private int _howManyDoughnuts;
+	private int _timeToCreateDoughnuts;
+	
+	public Bakery(int howManyDoughnut, int timeToCreateDoughnut)
+	{
+		this._howManyDoughnuts = howManyDoughnut;
+		this._timeToCreateDoughnuts = timeToCreateDoughnut;
+	}
 	@Override
 	public void run() {
 		
@@ -14,13 +22,13 @@ public class Bakery implements Runnable {
 			PointOfSale sale = DoughnutLoader();
 			if(sale != null)
 			{
-				sale.LoadDoughtnuts(15);
+				sale.LoadDoughtnuts(_howManyDoughnuts);
 			}
 			
 			// usypiamy watek
 			try
 			{
-				Thread.sleep(2000);
+				Thread.sleep((_timeToCreateDoughnuts*1000) * _howManyDoughnuts);
 			}
 			catch (Exception e)
 			{
