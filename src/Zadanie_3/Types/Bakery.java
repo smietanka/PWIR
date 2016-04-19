@@ -8,20 +8,18 @@ public class Bakery implements Runnable {
 	public Bakery(int timeDoughtnutMake)
 	{
 		this.timeDoughtnutMake = timeDoughtnutMake;
+
 	}
 	@Override
 	public void run() {
-		
 		Pos1 = new PointOfSale(10,2000,"Kasa 1");
-		Pos2 = new PointOfSale(10,2000,"Kasa 2");
+		Pos2 = new PointOfSale(10,4000,"Kasa 2");
 		Thread myThreadPos1 = new Thread(Pos1);
 		myThreadPos1.start();
 		Thread myThreadPos2 = new Thread(Pos2);
 		myThreadPos2.start();
-		
 		while(true)
 		{
-			
 			PointOfSale sale = WhereIsLessDoughnut();
 			if(sale != null)
 			{
@@ -42,23 +40,6 @@ public class Bakery implements Runnable {
 			}
 		}
 	}
-	
-	/*Sprawdza w kt�rej kasie stan p�czk�w jest < 2
-	public PointOfSale DoughnutLoader()
-	{
-		PointOfSale result = null;
-		if(Pos1.GetHowManyDoughnuts() < 2)
-		{
-			result = Pos1;
-		}
-		if(Pos2.GetHowManyDoughnuts() < 2)
-		{
-			result = Pos2;
-		}
-		
-		return result;
-	}
-	*/
 
 	public PointOfSale WhereIsLessClients()
 	{

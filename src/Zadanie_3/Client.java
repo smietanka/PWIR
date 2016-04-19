@@ -24,12 +24,12 @@ public class Client implements Runnable {
 	
 	private Bakery myBakery;
 	
-	public Client(int id, int healthPoints, Bakery myBakery)
+	public Client(int id, int healthPoints, Bakery myBakery, int hungryPercentage)
 	{
 		this.Id = id;
 		this.Name = myNameGenerator.getName();
 		this.CurrentHealthPoints = this.MaxHealtPoints = healthPoints;
-		this.HungryLimit = 80; // ile % maksymalnego zycia dla danego klienta bedzie rownoznaczne z glodem
+		this.HungryLimit = hungryPercentage; // ile % maksymalnego zycia dla danego klienta bedzie rownoznaczne z glodem
 		this.Statuses = Status.Walking;
 		this.IsAlive = true; // NARODZINY NOWEGO KLIENTA
 		timeWatcher = TimeWatch.start();
@@ -38,11 +38,6 @@ public class Client implements Runnable {
 
 	@Override
 	public void run() {
-		// taski do zrobienia:
-		// - klient chodzi
-		// - gdy bedzie g³odny musi iœæ do piekarni
-		// - jeœli czekanie klienta bedzie na tyle d³ugie w kolejce to klient umiera
-		
 		while(true)
 		{
 			if(this.IsAlive)
@@ -55,9 +50,12 @@ public class Client implements Runnable {
 				// jesli klient jest glodny to trzeba go wyslac do cukierni 
 				if(this.Statuses == Status.Hungry)
 				{
-					//System.out.println("wysylam do kolejki");
-					//przekazuje do kolejki kase a nie clienta
-					GoToQueue(myBakery.WhereIsLessClients());
+					// jesli ma status InQueue to nie rob nic.
+					if(this.Statuses != Status.InQueue)
+					{
+						//przekazuje do kolejki kase a nie clienta
+						GoToQueue(myBakery.WhereIsLessClients());	
+					}
 				}
 				
 				//sprawdzamy jaki ma status. W zaleznosci od statusu robimy jakis event
@@ -98,15 +96,23 @@ public class Client implements Runnable {
 	{
 		if(this.IsAlive)
 		{
-			// jesli zdrowie bedzie mniejsze od hungry limit (% z maxHealth) i wieksze od 0
-			//if((this.CurrentHealthPoints < (this.HungryLimit*this.MaxHealtPoints)/100) && (this.CurrentHealthPoints > 0))
-			if((this.CurrentHealthPoints < this.HungryLimit) && (this.CurrentHealthPoints > 0))
-			{
-				return Status.Hungry;
-			}
 			if(this.CurrentHealthPoints <= 0)
 			{
 				return Status.Killed;
+			}
+			
+			if(this.Statuses != Status.InQueue)
+			{
+				// jesli zdrowie bedzie mniejsze od hungry limit (% z maxHealth) i wieksze od 0
+				//if((this.CurrentHealthPoints < (this.HungryLimit*this.MaxHealtPoints)/100) && (this.CurrentHealthPoints > 0))
+				if((this.CurrentHealthPoints < this.HungryLimit) && (this.CurrentHealthPoints > 0))
+				{
+					return Status.Hungry;
+				}
+			}
+			else
+			{
+				return Status.InQueue;
 			}
 		}
 		return Status.Walking;
@@ -117,11 +123,11 @@ public class Client implements Runnable {
 		// jesli nasz klient jest g³odny to g³ód spada mu szybciej..
 		if(this.Statuses == Status.Hungry)
 		{
-			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(30);
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(20);
 		}
 		else
 		{
-			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(20);	
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(10);	
 		}
 	}
 	
@@ -156,6 +162,7 @@ public class Client implements Runnable {
 	{
 		this.Statuses = Status.InQueue;
 		pos.PutClientToQueue(this);
+		System.out.println(this.Name + " idzie do kolejki " + pos.Name);
 	}
 	
 	public void ChangeStatus(Status newStatus)

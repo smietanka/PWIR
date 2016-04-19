@@ -37,7 +37,7 @@ public class ThreadManager implements Runnable{
 				synchronized(this)
 				{
 					// Tworzenie nowego watku klienta
-					Client newClient = new Client(clientId, mySettings.healthPoints, myBakery);
+					Client newClient = new Client(clientId, mySettings.healthPoints, myBakery, mySettings.hungryInPercentage);
 					listOfClients.add(newClient);
 					Thread clientThread = new Thread(newClient);
 					
@@ -47,6 +47,14 @@ public class ThreadManager implements Runnable{
 					System.out.println("Mamy nowego klienta na œwiecie z nazw¹: "+newClient.GetName()+" o id: ["+newClient.GetId()+"]");
 					
 					clientThread.start();
+				}
+				try
+				{
+					Thread.sleep(1000);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
 				}
 			}
 			else
@@ -80,7 +88,7 @@ public class ThreadManager implements Runnable{
 				// jesli klient jest null to cos jest nie tak
 				if(eachClient != null)
 				{
-					eachClient.ShowVitalFunctions();
+					//eachClient.ShowVitalFunctions();
 					// jesli nie zyje to
 					if(!eachClient.GetIsAlive())
 					{
