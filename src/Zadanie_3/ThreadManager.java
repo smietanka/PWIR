@@ -6,6 +6,7 @@ import Zadanie_3.Types.Bakery;
 import Zadanie_3.Types.Settings;
 
 public class ThreadManager implements Runnable{
+	Random rand = new Random();
 	// Ustawienia
 	private Settings mySettings;
 	
@@ -15,8 +16,6 @@ public class ThreadManager implements Runnable{
 	private int currentClients = 0;
 	private int clientId = 0;
 	
-	// zmienne cukierni
-	
 	public ThreadManager(Settings mySetup)
 	{
 		this.mySettings = mySetup;
@@ -25,7 +24,7 @@ public class ThreadManager implements Runnable{
 	@Override
 	public void run() {
 		if(mySettings.clientOnMap == 0) return;
-		
+			
 		// Tworzenie piekarni
 		Bakery myBakery = new Bakery(mySettings.timeDoughnutMake);
 		Thread myThreadBakery = new Thread(myBakery);
