@@ -12,6 +12,7 @@ public class PointOfSale implements Runnable{
 	// czas sprzeda¿y p¹czka
 	private int timeSelling;
 	public String name;
+	public Client CurrentClient;
 	
 	public PointOfSale(int howManyDoo, int timeSelling, String name)
 	{
@@ -39,19 +40,19 @@ public class PointOfSale implements Runnable{
 	{
 		return ClientsQueue.size();
 	}
+	
 	public int GetTimeSelling()
 	{
 		return timeSelling;
 	}
 	
-	public void SellDoughnuts()
+	public void SellDoughnuts(Client client)
 	{
-		Client client;
 		this.HowManyDoughnuts--;
-		client = ClientsQueue.get(1);
+		//client = ClientsQueue.get(0);
 		client.ChangeStatus(Status.Walking);
 		client.AddHP();
-		ClientsQueue.remove(1);
+		//ClientsQueue.remove(0);
 		
 	}
 
@@ -59,15 +60,20 @@ public class PointOfSale implements Runnable{
 	public void run() {
 		while(true)
 		{
-			if(ClientsQueue.isEmpty())
+			if(!ClientsQueue.isEmpty())
 			{
 				try
 				{
-					SellDoughnuts();
-					System.out.println(this.name+" sprzedaje paczka. Pozostalo: "+this.GetHowManyDoughnuts());
-					System.out.println("\nDlugosc kolejki:"+this.HowManyClients());
+					CurrentClient = ClientsQueue.get(1);
+					CurrentClient.ChangeStatus(Status.Buying);
+					//SellDoughnuts(CurrentClient);
 					//Trwa sprzeda¿ p¹czka
-					Thread.sleep(this.timeSelling);
+					//Thread.sleep(200);//this.timeSelling);
+					CurrentClient.AddHP();
+					CurrentClient.ChangeStatus(Status.Walking);
+					ClientsQueue.remove(1);
+					System.out.println(this.name+" kupuje paczka. Pozostalo: "+this.GetHowManyDoughnuts());
+					System.out.println("Dlugosc kolejki:"+this.HowManyClients());
 				}
 				catch (Exception e)
 				{
@@ -76,7 +82,7 @@ public class PointOfSale implements Runnable{
 			}
 			else
 			{
-				System.out.println("Nie ma ¿adnego klienta");				
+				//System.out.println("Nie ma ¿adnego klienta");				
 			}
 		}
 	}

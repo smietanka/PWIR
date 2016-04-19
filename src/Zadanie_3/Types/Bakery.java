@@ -3,16 +3,21 @@ package Zadanie_3.Types;
 public class Bakery implements Runnable {
 	
 	private int timeDoughtnutMake;
-	private PointOfSale Pos1,Pos2;
+	PointOfSale Pos1,Pos2;
 	
-	public Bakery(int timeDoughtnutMake, PointOfSale pos1, PointOfSale pos2)
+	public Bakery(int timeDoughtnutMake)
 	{
 		this.timeDoughtnutMake = timeDoughtnutMake;
-		this.Pos1 = pos1;
-		this.Pos2 = pos2;
 	}
 	@Override
 	public void run() {
+		
+		Pos1 = new PointOfSale(10,2000,"Kasa 1");
+		Pos2 = new PointOfSale(10,2000,"Kasa 2");
+		Thread myThreadPos1 = new Thread(Pos1);
+		myThreadPos1.start();
+		Thread myThreadPos2 = new Thread(Pos2);
+		myThreadPos2.start();
 		
 		while(true)
 		{
@@ -21,9 +26,7 @@ public class Bakery implements Runnable {
 			if(sale != null)
 			{
 				sale.LoadDoughtnuts(1);
-				System.out.println("---------------------------");
-				System.out.println("Kasa numer "+sale.name+" otrzyma³a 1 paczka!");
-				System.out.println("---------------------------");
+				//System.out.println("Kasa numer "+sale.name+" otrzyma³a 1 paczka!");
 			}
 			
 			// usypiamy watek
@@ -59,13 +62,13 @@ public class Bakery implements Runnable {
 	public PointOfSale WhereIsLessClients()
 	{
 		PointOfSale result = null;
-		if(Pos1.HowManyClients() < Pos2.HowManyClients())
+		if(this.Pos1.HowManyClients() < this.Pos2.HowManyClients())
 		{
-			result = Pos1;
+			result = this.Pos1;
 		}
 		else
 		{
-			result = Pos2;
+			result = this.Pos2;
 		}
 		return result;
 	}
