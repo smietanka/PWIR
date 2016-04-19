@@ -26,7 +26,8 @@ public class Bakery implements Runnable {
 			if(sale != null)
 			{
 				sale.LoadDoughtnuts(1);
-				//System.out.println("Kasa numer "+sale.name+" otrzymaï¿½a 1 paczka!");
+
+				//System.out.println("Kasa numer "+sale.name+" otrzyma³a 1 paczka!");
 			}
 			
 			// usypiamy watek
