@@ -26,7 +26,7 @@ public class ThreadManager implements Runnable{
 		if(mySettings.clientOnMap == 0) return;
 			
 		// Tworzenie piekarni
-		Bakery myBakery = new Bakery(mySettings.timeDoughnutMake);
+		Bakery myBakery = new Bakery(mySettings.timeDoughnutMake, mySettings.howManyPos);
 		Thread myThreadBakery = new Thread(myBakery);
 		myThreadBakery.start();
 		
@@ -44,7 +44,7 @@ public class ThreadManager implements Runnable{
 					currentClients++;
 					clientId++;
 					
-					System.out.println("Mamy nowego klienta na œwiecie z nazw¹: "+newClient.GetName()+" o id: ["+newClient.GetId()+"]");
+					//System.out.println("Mamy nowego klienta na œwiecie z nazw¹: "+newClient.GetName()+" o id: ["+newClient.GetId()+"]");
 					
 					clientThread.start();
 				}
@@ -60,7 +60,7 @@ public class ThreadManager implements Runnable{
 			else
 			{
 				try {
-					Thread.sleep(1500);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -88,7 +88,7 @@ public class ThreadManager implements Runnable{
 				// jesli klient jest null to cos jest nie tak
 				if(eachClient != null)
 				{
-					//eachClient.ShowVitalFunctions();
+					eachClient.ShowVitalFunctions();
 					// jesli nie zyje to
 					if(!eachClient.GetIsAlive())
 					{

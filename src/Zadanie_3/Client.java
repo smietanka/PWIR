@@ -15,6 +15,7 @@ public class Client implements Runnable {
 	private Status Statuses;
 	private int HungryLimit;
 	private volatile boolean IsAlive;
+	private volatile boolean IsInQueue;
 	
 	private TimeWatch timeWatcher;
 	private long elapsedTime;
@@ -32,6 +33,7 @@ public class Client implements Runnable {
 		this.HungryLimit = hungryPercentage; // ile % maksymalnego zycia dla danego klienta bedzie rownoznaczne z glodem
 		this.Statuses = Status.Walking;
 		this.IsAlive = true; // NARODZINY NOWEGO KLIENTA
+		this.IsInQueue = false;
 		timeWatcher = TimeWatch.start();
 		this.myBakery = myBakery;
 	}
@@ -42,8 +44,11 @@ public class Client implements Runnable {
 		{
 			if(this.IsAlive)
 			{
-				// Z biegiem czasu klient robi sie bardziej glodny
-				HitClient();
+				if(!this.Statuses.equals(Status.Buying))
+				{
+					// Z biegiem czasu klient robi sie bardziej glodny
+					HitClient();	
+				}
 				// Sprawdzamy status klienta i nadajemy dany status.
 				ChangeStatus(CheckHealthPoints());
 				
@@ -53,8 +58,11 @@ public class Client implements Runnable {
 					// jesli ma status InQueue to nie rob nic.
 					if(this.Statuses != Status.InQueue)
 					{
-						//przekazuje do kolejki kase a nie clienta
-						GoToQueue(myBakery.WhereIsLessClients());	
+						if(!this.IsInQueue)
+						{
+							//przekazuje do kolejki kase a nie clienta
+							GoToQueue(myBakery.WhereIsLessClients());	
+						}
 					}
 				}
 				
@@ -94,18 +102,18 @@ public class Client implements Runnable {
 	
 	public Status CheckHealthPoints()
 	{
-		if(this.IsAlive)
+		if(this.IsAlive && !this.IsInQueue)
 		{
 			if(this.CurrentHealthPoints <= 0)
 			{
 				return Status.Killed;
 			}
 			
-			if(this.Statuses != Status.InQueue)
+			if((!this.Statuses.equals(Status.InQueue)) || (this.Statuses.equals(Status.Hungry)))
 			{
 				// jesli zdrowie bedzie mniejsze od hungry limit (% z maxHealth) i wieksze od 0
-				//if((this.CurrentHealthPoints < (this.HungryLimit*this.MaxHealtPoints)/100) && (this.CurrentHealthPoints > 0))
-				if((this.CurrentHealthPoints < this.HungryLimit) && (this.CurrentHealthPoints > 0))
+				if((this.CurrentHealthPoints < (this.HungryLimit*this.MaxHealtPoints)/100) && (this.CurrentHealthPoints > 0))
+				//if((this.CurrentHealthPoints < this.HungryLimit) && (this.CurrentHealthPoints > 0))
 				{
 					return Status.Hungry;
 				}
@@ -115,7 +123,7 @@ public class Client implements Runnable {
 				return Status.InQueue;
 			}
 		}
-		return Status.Walking;
+		return this.Statuses;
 	}
 	
 	public void HitClient()
@@ -123,11 +131,11 @@ public class Client implements Runnable {
 		// jesli nasz klient jest g³odny to g³ód spada mu szybciej..
 		if(this.Statuses == Status.Hungry)
 		{
-			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(20);
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(4);
 		}
 		else
 		{
-			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(10);	
+			this.CurrentHealthPoints = this.CurrentHealthPoints - myRand.nextInt(2);	
 		}
 	}
 	
@@ -151,15 +159,31 @@ public class Client implements Runnable {
 		return this.elapsedTime;
 	}
 	
+	public void ChangeIsInQueue(boolean toChange)
+	{
+		this.IsInQueue = toChange;
+	}
+	
+	public void SleepClient(int timeSleep)
+	{
+		try {
+			Thread.sleep(timeSleep);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void KillClient()
 	{
 		this.IsAlive = false;
 		this.elapsedTime = timeWatcher.time(TimeUnit.SECONDS);
-		System.out.println(this.Name + " has been killed...");
+		//System.out.println(this.Name + " has been killed...");
 	}
 
 	public void GoToQueue(PointOfSale pos)
 	{
+		this.IsInQueue = true;
 		this.Statuses = Status.InQueue;
 		pos.PutClientToQueue(this);
 		System.out.println(this.Name + " idzie do kolejki " + pos.Name);
@@ -172,16 +196,16 @@ public class Client implements Runnable {
 	
 	public void ShowVitalFunctions()
 	{
-		String vitalFunctions = String.format("%s:\nCzy zyje?: %s\nStatus: %s\nAktualne zycie: %d\n------------------------------------------------------------------------------------------", 
-				this.Name, 
-				this.IsAlive, 
+		String vitalFunctions = String.format("%s:\nCzy zyje?: %s\nAktualne zycie: %d\n------------------------------------------------------------------------------------------", 
+				this.Name,  
 				this.Statuses, 
 				this.CurrentHealthPoints);
 		System.out.println(vitalFunctions);
 	}
 	
-	public void AddHP()
+	public void EatDoughnut()
 	{
 		this.CurrentHealthPoints = this.MaxHealtPoints;
+		this.Statuses = Status.Walking;
 	}
 }

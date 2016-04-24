@@ -5,4 +5,5 @@ public class Settings {
 	public int clientOnMap;
 	public int timeDoughnutMake;
 	public int hungryInPercentage;
+	public int howManyPos;
 }

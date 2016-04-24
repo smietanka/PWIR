@@ -19,7 +19,7 @@ public class PointOfSale implements Runnable{
 		this.HowManyDoughnuts = howManyDoo;
 		this.timeSelling = timeSelling;
 		this.Name = name;
-		System.out.println("Stworzono "+name);
+		//System.out.println("Stworzono "+name);
 	}
 	
 	public void PutClientToQueue(Client client)
@@ -53,10 +53,11 @@ public class PointOfSale implements Runnable{
 		synchronized(this)
 		{
 			this.HowManyDoughnuts--;
-			client.ChangeStatus(Status.Walking);
-			client.AddHP();
-			ClientsQueue.remove(0);
+			client.EatDoughnut();
+			ClientsQueue.remove(client);
+			client.ChangeIsInQueue(false);
 		}
+		System.out.println(client.GetName() +" kupuje paczka z "+this.Name+". Pozostalo: "+this.GetHowManyDoughnuts());
 	}
 
 	@Override
@@ -72,24 +73,19 @@ public class PointOfSale implements Runnable{
 						CurrentClient = ClientsQueue.get(0);
 						CurrentClient.ChangeStatus(Status.Buying);
 						//Trwa sprzeda¿ p¹czka
+						CurrentClient.SleepClient(this.timeSelling);
 						Thread.sleep(this.timeSelling);
 						SellDoughnuts(CurrentClient);
-						System.out.println(CurrentClient.GetName() +" kupuje paczka. Pozostalo: "+this.GetHowManyDoughnuts());
-						System.out.println("Dlugosc kolejki:"+this.HowManyClients());					
 					}
 					else
 					{
-						System.out.println(this.Name + " nie ma juz paczkow. Zapraszamy kiedy indziej.");
+						//System.out.println(this.Name + " nie ma juz paczkow. Zapraszamy kiedy indziej.");
 					}
 				}
 				catch (Exception e)
 				{
 					e.printStackTrace();
 				}		
-			}
-			else
-			{
-				//System.out.println("Nie ma ¿adnego klienta");				
 			}
 			
 			try
