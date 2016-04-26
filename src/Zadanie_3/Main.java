@@ -1,9 +1,9 @@
 package Zadanie_3;
 
 import Zadanie_3.Types.Settings;
+import javax.swing.*;
 
 public class Main {
-
 	public static void main(String[] args) {
 		Settings mySetup = new Settings();
 		
@@ -18,5 +18,7 @@ public class Main {
 		ThreadManager mojThreadManager = new ThreadManager(mySetup);
 		Thread mojWatek = new Thread(mojThreadManager);
 		mojWatek.start();
+		
+		SwingUtilities.invokeLater(new WindowsTest(mojThreadManager));
 	}
 }

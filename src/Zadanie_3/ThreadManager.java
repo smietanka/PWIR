@@ -1,11 +1,13 @@
 package Zadanie_3;
 
 import java.util.*;
+import java.util.List;
 
 import Zadanie_3.Types.Bakery;
 import Zadanie_3.Types.Settings;
 
 public class ThreadManager implements Runnable{
+	
 	Random rand = new Random();
 	// Ustawienia
 	private Settings mySettings;
@@ -40,7 +42,6 @@ public class ThreadManager implements Runnable{
 					Client newClient = new Client(clientId, mySettings.healthPoints, myBakery, mySettings.hungryInPercentage);
 					listOfClients.add(newClient);
 					Thread clientThread = new Thread(newClient);
-					
 					currentClients++;
 					clientId++;
 					
