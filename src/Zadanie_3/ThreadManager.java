@@ -2,6 +2,10 @@ package Zadanie_3;
 
 import java.util.*;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+
 import Zadanie_3.Types.Bakery;
 import Zadanie_3.Types.Settings;
 
@@ -15,10 +19,16 @@ public class ThreadManager implements Runnable{
 	private List<Client> listOfDeadClients = new ArrayList<Client>();
 	private int currentClients = 0;
 	private int clientId = 0;
+	private Bakery myBakery;
+	public Client newClient;
+	private GameWindow myWindow;
+	private JLayeredPane myPane;
 	
-	public ThreadManager(Settings mySetup)
+	public ThreadManager(Settings Setup, GameWindow Window, JLayeredPane Pane)
 	{
-		this.mySettings = mySetup;
+		this.mySettings = Setup;
+		this.myWindow = Window;
+		this.myPane = Pane;
 	}
 	
 	@Override
@@ -26,9 +36,7 @@ public class ThreadManager implements Runnable{
 		if(mySettings.clientOnMap == 0) return;
 			
 		// Tworzenie piekarni
-		Bakery myBakery = new Bakery(mySettings.timeDoughnutMake, mySettings.howManyPos);
-		Thread myThreadBakery = new Thread(myBakery);
-		myThreadBakery.start();
+		makeBakery();
 		
 		while(true)
 		{
@@ -37,16 +45,7 @@ public class ThreadManager implements Runnable{
 				synchronized(this)
 				{
 					// Tworzenie nowego watku klienta
-					Client newClient = new Client(clientId, mySettings.healthPoints, myBakery, mySettings.hungryInPercentage);
-					listOfClients.add(newClient);
-					Thread clientThread = new Thread(newClient);
-					
-					currentClients++;
-					clientId++;
-					
-					//System.out.println("Mamy nowego klienta na œwiecie z nazw¹: "+newClient.GetName()+" o id: ["+newClient.GetId()+"]");
-					
-					clientThread.start();
+					makeNewClient();
 				}
 				try
 				{
@@ -72,6 +71,30 @@ public class ThreadManager implements Runnable{
 	public List<Client> GetClientsList()
 	{
 		return this.listOfClients;
+	}
+	
+	public void makeBakery()
+	{
+		myBakery = new Bakery(mySettings.timeDoughnutMake, mySettings.howManyPos);
+		Thread myThreadBakery = new Thread(myBakery);
+		myThreadBakery.start();
+	}
+	
+	public boolean makeNewClient()
+	{
+		newClient = new Client(clientId, mySettings.healthPoints, myBakery, mySettings.hungryInPercentage, myWindow, myPane);
+		listOfClients.add(newClient);
+		Thread clientThread = new Thread(newClient);
+		
+		currentClients++;
+		clientId++;
+		
+		//System.out.println("Mamy nowego klienta na œwiecie z nazw¹: "+newClient.GetName()+" o id: ["+newClient.GetId()+"]");
+		
+		clientThread.start();
+		
+		newClient.RandDestinationXY();
+		return true;
 	}
 	
 	public void CheckClients()

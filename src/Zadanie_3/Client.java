@@ -2,6 +2,11 @@ package Zadanie_3;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+
 import Zadanie_3.Methods.NameGenerator;
 import Zadanie_3.Methods.TimeWatch;
 import Zadanie_3.Types.Bakery;
@@ -25,7 +30,18 @@ public class Client implements Runnable {
 	
 	private Bakery myBakery;
 	
-	public Client(int id, int healthPoints, Bakery myBakery, int hungryPercentage)
+	//need for graphic
+	private int speed;
+	public int posX;
+	public int posY;
+	public int posXdestination;
+	public int posYdestination;
+	private volatile boolean targetIsAcquired;
+	public JLabel Image;// = new JLabel();
+	public GameWindow window;
+	//public JLayeredPane layeredPane;
+	
+	public Client(int id, int healthPoints, Bakery myBakery, int hungryPercentage, GameWindow window, JLayeredPane layeredPane)
 	{
 		this.Id = id;
 		this.Name = myNameGenerator.getName();
@@ -36,6 +52,30 @@ public class Client implements Runnable {
 		this.IsInQueue = false;
 		timeWatcher = TimeWatch.start();
 		this.myBakery = myBakery;
+		
+		Random rand = new Random();
+		
+		this.speed = 10;
+		
+		this.posX = rand.nextInt(800);
+		int modulo = this.posX%10;
+		if (modulo != 0)
+			this.posX -= modulo;
+		
+		this.posY = rand.nextInt(200)+300;
+		modulo = this.posY%10;
+		if (modulo != 0)
+			this.posY -= modulo;
+		
+		this.targetIsAcquired = false;
+		this.RandDestinationXY();
+		this.window = window;
+		this.Image = new JLabel(this.Name + "[X: " + this.posX + ", Y: " + this.posY + "]", new ImageIcon("E:/ludek.png"), JLabel.CENTER);
+		this.Image.setVerticalTextPosition(JLabel.BOTTOM);
+		//this.Image.setIcon(new ImageIcon("E:/ludek.png"));
+		this.Image.setBounds(posX, posY, 250, 250);
+		layeredPane = window.getLayeredPane();
+		layeredPane.add(Image, new Integer(this.Id+1));
 	}
 
 	@Override
@@ -49,6 +89,9 @@ public class Client implements Runnable {
 					// Z biegiem czasu klient robi sie bardziej glodny
 					HitClient();	
 				}
+				
+				Move();
+				
 				// Sprawdzamy status klienta i nadajemy dany status.
 				ChangeStatus(CheckHealthPoints());
 				
@@ -185,6 +228,7 @@ public class Client implements Runnable {
 	{
 		this.IsInQueue = true;
 		this.Statuses = Status.InQueue;
+		pos.MoveToQueue(pos, this);
 		pos.PutClientToQueue(this);
 		System.out.println(this.Name + " idzie do kolejki " + pos.Name);
 	}
@@ -207,5 +251,76 @@ public class Client implements Runnable {
 	{
 		this.CurrentHealthPoints = this.MaxHealtPoints;
 		this.Statuses = Status.Walking;
+	}
+	
+	public void RandDestinationXY()
+	{
+		Random Rand = new Random();
+		this.targetIsAcquired = false;
+		
+		this.posXdestination = Rand.nextInt(600);
+		int modulo = this.posXdestination%10;
+		if (modulo != 0)
+			this.posXdestination -= modulo;
+			
+		this.posYdestination = Rand.nextInt(250)+300;
+		int modulo2 = this.posYdestination%10;
+		if (modulo2 != 0)
+			this.posYdestination -= modulo2;
+		
+	}
+	
+	public void CheckDestinationXY()
+	{
+		if(this.posX == this.posXdestination && this.posY == this.posYdestination)
+		{
+			this.targetIsAcquired = true;
+			this.RandDestinationXY();
+		}
+	}
+	
+	public void MoveUp()
+	{
+		this.posY -= this.speed;
+	}
+	
+	public void MoveDown()
+	{
+		this.posY += this.speed;
+	}
+	
+	public void MoveLeft()
+	{
+		this.posX -= this.speed;
+	}
+	
+	public void MoveRight()
+	{
+		this.posX += this.speed;
+	}
+	
+	public void Move()
+	{
+		CheckDestinationXY();
+		if(this.posX<this.posXdestination)
+		{
+			MoveRight();
+		}
+		else
+		{
+			MoveLeft();
+		}
+		if(this.posY>this.posYdestination)
+		{
+			MoveUp();
+		}
+		else
+		{
+			MoveDown();
+		}
+		this.Image.setText(this.Name + "[X: " + this.posX + ", Y: " + this.posY + "]["+this.posXdestination+","+this.posYdestination+"]");
+		this.Image.setLocation(this.posX, this.posY);
+		
+		
 	}
 }

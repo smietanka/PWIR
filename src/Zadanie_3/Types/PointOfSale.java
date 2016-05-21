@@ -13,12 +13,14 @@ public class PointOfSale implements Runnable{
 	private int timeSelling;
 	public String Name;
 	public Client CurrentClient;
-	
+	public static int id=0;
+	public int posX = 
 	public PointOfSale(int howManyDoo, int timeSelling, String name)
 	{
 		this.HowManyDoughnuts = howManyDoo;
 		this.timeSelling = timeSelling;
 		this.Name = name;
+		this.id++;
 		//System.out.println("Stworzono "+name);
 	}
 	
@@ -46,6 +48,20 @@ public class PointOfSale implements Runnable{
 	public int GetTimeSelling()
 	{
 		return timeSelling;
+	}
+	
+	public void MoveToQueue(PointOfSale pos, Client client)
+	{
+		if(pos.id == 1)
+		{
+			client.posXdestination = 200;	
+			client.posYdestination = 140;
+		}
+		else
+		{
+			client.posXdestination = 500;	
+			client.posYdestination = 140;
+		}
 	}
 	
 	public void SellDoughnuts(Client client)
